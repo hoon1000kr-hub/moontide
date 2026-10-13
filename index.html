@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="MOONTIDE Entertainment - 가상 엔터테인먼트사 연습용 홈페이지. 아티스트 ORBIT9, LUMEN, SEOHA와 JS UNIVERSE 세계관.">
+<!-- 네이버 서치어드바이저 소유확인 태그를 이 줄 아래에 붙여 넣기 -->
+<title>MOONTIDE Entertainment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 기업형 엔터 사이트 — 풀폭 비주얼 슬라이더, 기업 메뉴, 큰 아티스트 타일, 뉴스 리스트, 사업영역, 기업정보 푸터 */
+:root{
+  --bg:#FFFFFF; --surface:#F4F4F4; --fg:#0A0A0A; --muted:#6B6B6B; --line:#E2E2E2; --accent:#D1009C; --neon:#FF2BD6;
+  --display:"Bricolage Grotesque","Noto Sans KR",system-ui,sans-serif;
+  --body:"Noto Sans KR",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.65 var(--body)}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:24px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:18px;flex-wrap:wrap}
+.logo{font:800 22px var(--display);letter-spacing:.06em}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:500 13px var(--body);letter-spacing:.08em;text-transform:uppercase;flex-wrap:wrap}
+nav ul a{color:var(--muted)} nav ul a:hover{color:var(--fg)}
+nav ul a.uni{color:var(--bg);background:var(--fg);padding:5px 12px;border-radius:99px}
+#universe{scroll-margin-top:60px}
+/* universe: 의도적으로 항상 어두운 우주 화면 */
+.uv{position:relative;background:#000;color:#E8E9F5;overflow:hidden}
+#sky{position:absolute;inset:0;width:100%;height:100%}
+.uv-in{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.uv-in > *{min-width:0}
+.uv small{font:500 12px var(--mono);letter-spacing:.18em;color:var(--neon)}
+.uv h2{font-size:clamp(40px,7vw,80px);margin:8px 0 18px;color:#fff;text-shadow:0 0 18px #FF2BD688}
+.uv p{color:#D6D6D6;max-width:34em;font-size:17px} .uv p b{color:#fff}
+.uv .hint{font-size:13px;color:#7A7E99}
+.story{margin-top:22px;border-left:2px solid var(--neon);padding:4px 0 4px 18px}
+.story h3{font:800 24px var(--display);margin:4px 0 6px;color:#fff}
+.story p{margin:0}
+.planets{position:relative;aspect-ratio:1;max-width:100%}
+.pl{position:absolute;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;color:#fff;font:800 13px var(--display);letter-spacing:.08em;transition:transform .3s,box-shadow .3s}
+.pl span{transform:translateY(calc(100% + 30px))}
+.pl:hover,.pl.on{transform:scale(1.08)}
+.p1{width:34%;aspect-ratio:1;left:8%;top:12%;background:radial-gradient(circle at 35% 30%,#fff,#9a9a9a 55%,#1a1a1a);box-shadow:0 0 50px #ffffff55}
+.p2{width:24%;aspect-ratio:1;right:6%;top:30%;background:repeating-linear-gradient(0deg,#ffffff30 0 1px,transparent 1px 8px),#000;border:1.5px solid #fff;box-shadow:0 0 30px #ffffff33}
+.p3{width:18%;aspect-ratio:1;left:40%;bottom:8%;background:radial-gradient(circle at 35% 30%,#FFC6F3,#FF2BD6 55%,#3d0033);box-shadow:0 0 44px #FF2BD6aa}
+.pl.on{box-shadow:0 0 0 3px #fff,0 0 70px #fff6}
+@media (max-width:860px){.uv-in{grid-template-columns:1fr}.planets{max-width:420px;width:100%;margin:0 auto}}
+.lang{font:500 12px var(--mono);color:var(--muted)}
+/* hero slider */
+.hero{position:relative;height:min(78vh,720px);min-height:420px;overflow:hidden;color:#fff;background:#05060A}
+.slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s}
+.slide.on{opacity:1}
+/* 표지: 블랙·화이트 + 네온 마젠타 한 색 */
+.s1{background:radial-gradient(circle at 72% 38%,transparent 0 17%,var(--neon) 17.4% 18%,transparent 18.6%),radial-gradient(circle at 72% 38%,#fff 0,#777 9%,transparent 30%),#000}
+.s2{background:linear-gradient(to top,#000 5%,transparent 70%),repeating-linear-gradient(90deg,#ffffff1f 0 1px,transparent 1px 56px),repeating-linear-gradient(0deg,#ffffff1f 0 1px,transparent 1px 56px),radial-gradient(ellipse at 50% 100%,#FF2BD666,transparent 60%),#000}
+.s3{background:repeating-linear-gradient(0deg,#00000066 0 2px,transparent 2px 5px),linear-gradient(135deg,#000 30%,#2a2a2a 60%,var(--neon) 140%)}
+.slide .wrap{width:100%;padding-block:56px}
+.slide small{font:500 12px var(--mono);letter-spacing:.18em;opacity:.8}
+.slide h1{font:800 clamp(48px,10vw,128px)/.9 var(--display);letter-spacing:-.02em;margin:10px 0 14px}
+.slide p{margin:0;max-width:30em;opacity:.85}
+.dots{position:absolute;right:24px;bottom:28px;display:flex;gap:10px;z-index:2}
+.dots button{width:36px;height:3px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer}
+.dots button.on{background:#fff}
+/* sections */
+section{padding-block:88px}
+.head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+h2{font:800 clamp(32px,5vw,52px)/1 var(--display);letter-spacing:-.01em;margin:0}
+.more{font:500 13px var(--body);color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:2px}
+.more:hover{color:var(--fg)}
+/* artists */
+.artists{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.tile{position:relative;aspect-ratio:3/4;max-width:100%;color:#fff;overflow:hidden;display:flex;align-items:flex-end;padding:22px}
+.tile .bg{position:absolute;inset:0;transition:transform .6s}
+.tile:hover .bg{transform:scale(1.04)}
+.tile div:last-child{position:relative}
+.tile b{display:block;font:800 30px var(--display);letter-spacing:.03em}
+.tile span{font-size:13px;opacity:.8}
+/* news */
+.news{list-style:none;margin:0;padding:0;border-top:1px solid var(--fg)}
+.news li{border-bottom:1px solid var(--line)}
+.news a{display:grid;grid-template-columns:110px 1fr 120px;gap:20px;padding-block:22px;align-items:baseline}
+.news a:hover strong{text-decoration:underline}
+.news .cat{font:500 12px var(--mono);letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.news time{font:500 13px var(--mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.news strong{font-weight:500;min-width:0}
+/* business */
+.biz{background:var(--surface)}
+.bizgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.biz article{background:var(--surface);padding:28px 24px;display:grid;gap:10px;align-content:start}
+.biz .no{font:500 12px var(--mono);color:var(--muted)}
+.biz h3{font:800 22px var(--display);margin:0}
+.biz p{margin:0;color:var(--muted);font-size:14px}
+/* corp links */
+.corp{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.corp a{border:1px solid var(--line);padding:28px;display:grid;gap:6px}
+.corp a:hover{border-color:var(--fg)}
+.corp b{font:800 24px var(--display)}
+.corp span{color:var(--muted);font-size:14px}
+footer{background:#0B0C11;color:#9499AC;padding-block:48px;font-size:13px}
+footer .logo{color:#EDEEF4;font-size:18px}
+footer .cols{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:18px}
+footer p{margin:0}
+@media (max-width:860px){
+  .artists{grid-template-columns:1fr 1fr}.bizgrid{grid-template-columns:1fr 1fr}.corp{grid-template-columns:1fr}
+  nav ul{gap:18px} section{padding-block:60px}
+  .news a{grid-template-columns:1fr;gap:4px} .news time{text-align:left}
+}
+@media (max-width:480px){.artists,.bizgrid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.slide,.tile .bg{transition:none}}
+</style>
+
+</head>
+<body style="margin:0">
+<header><div class="wrap"><nav>
+  <a class="logo" href="#top">MOONTIDE</a>
+  <ul><li><a href="#artists">Artist</a></li><li><a href="#news">News</a></li><li><a class="uni" href="#universe">Universe</a></li></ul>
+  <span class="lang">KOR / ENG</span>
+</nav></div></header>
+
+<main id="top">
+  <section class="hero" aria-label="메인 비주얼" style="padding:0">
+    <div class="slide s1 on"><div class="wrap"><small>ORBIT9 · 3RD MINI ALBUM</small><h1>Gravity Well</h1><p>9인의 궤도가 하나로 겹쳐지는 순간. 지금 전 음원 사이트에서 만나 보세요.</p></div></div>
+    <div class="slide s2"><div class="wrap"><small>LUMEN · 1ST FULL ALBUM</small><h1>Bioluminescent</h1><p>스스로 빛나는 다섯 개의 목소리. 정규 1집 발매.</p></div></div>
+    <div class="slide s3"><div class="wrap"><small>SEOHA · DIGITAL SINGLE</small><h1>Low Tide</h1><p>물이 빠진 자리에 남은 이야기. 9월 22일 공개.</p></div></div>
+    <div class="dots" role="tablist" aria-label="슬라이드 선택">
+      <button class="on" aria-label="1번 슬라이드"></button><button aria-label="2번 슬라이드"></button><button aria-label="3번 슬라이드"></button>
+    </div>
+  </section>
+
+  <section id="artists"><div class="wrap">
+    <div class="head"><h2>Artist</h2><a class="more" href="#artists">전체 아티스트</a></div>
+    <div class="artists">
+      <a class="tile" href="#artists"><div class="bg s1"></div><div><b>ORBIT9</b><span>Boy group · 2021</span></div></a>
+      <a class="tile" href="#artists"><div class="bg s2"></div><div><b>LUMEN</b><span>Girl group · 2023</span></div></a>
+      <a class="tile" href="#artists"><div class="bg s3"></div><div><b>SEOHA</b><span>Solo · 2020</span></div></a>
+    </div>
+  </div></section>
+
+  <section id="news"><div class="wrap">
+    <div class="head"><h2>News</h2><a class="more" href="#news">전체 보기</a></div>
+    <ul class="news">
+      <li><a href="#news"><span class="cat">Release</span><strong>SEOHA 디지털 싱글 〈Low Tide〉 발매 안내</strong><time>2026.09.22</time></a></li>
+      <li><a href="#news"><span class="cat">Audition</span><strong>MOONTIDE 글로벌 오디션 2026 온라인 접수 시작 (10.13 – 11.09)</strong><time>2026.09.30</time></a></li>
+      <li><a href="#news"><span class="cat">Concert</span><strong>LUMEN 첫 단독 콘서트 〈GLOW HOUR〉 서울 공연 티켓 오픈</strong><time>2026.09.15</time></a></li>
+    </ul>
+  </div></section>
+
+  <section id="universe" class="uv" aria-label="JS UNIVERSE 세계관">
+    <canvas id="sky" aria-hidden="true"></canvas>
+    <div class="wrap uv-in">
+      <div class="uv-copy">
+        <small>MOONTIDE WORLDVIEW</small>
+        <h2>JS UNIVERSE</h2>
+        <p>노래 한 번에 픽셀 하나. 그 빛으로 지은 가상 도시 <b>TIDE://CITY</b>.<br>아티스트는 현실과 이 도시에 각각 존재합니다.</p>
+        <p class="hint">행성을 눌러 보세요.</p>
+        <div class="story" id="story" aria-live="polite">
+          <small id="st-tag">PROLOGUE · LOG 000</small>
+          <h3 id="st-title">첫 번째 접속</h3>
+          <p id="st-body">빈 화면에 첫 노래가 재생되자 픽셀 하나가 켜졌습니다. 도시는 팬들이 들은 노래로 지어지고, 노래가 멈추면 어두워집니다.</p>
+        </div>
+      </div>
+      <div class="planets" role="group" aria-label="아티스트 행성">
+        <button class="pl p1" data-k="orbit"><span>ORBIT9</span></button>
+        <button class="pl p2" data-k="lumen"><span>LUMEN</span></button>
+        <button class="pl p3" data-k="seoha"><span>SEOHA</span></button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <div class="logo">MOONTIDE</div>
+  <div class="cols">
+    <p>(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment</p>
+    <p>가상의 회사·아티스트로 만든 연습용 디자인입니다.</p>
+  </div>
+</div></footer>
+
+<script>
+const s=[...document.querySelectorAll('.slide')],d=[...document.querySelectorAll('.dots button')];let i=0,t;
+function go(n){s[i].classList.remove('on');d[i].classList.remove('on');i=n;s[i].classList.add('on');d[i].classList.add('on')}
+function auto(){clearInterval(t);if(!matchMedia('(prefers-reduced-motion:reduce)').matches)t=setInterval(()=>go((i+1)%s.length),5000)}
+d.forEach((b,n)=>b.onclick=()=>{go(n);auto()});auto();
+
+// JS UNIVERSE: 별 배경 + 행성 이야기
+const lore={
+  orbit:['ORBIT9','아홉 구역의 관리자','도시의 아홉 구역을 멤버 아바타가 하나씩 지킵니다. 팬 SATELLITE의 신호가 구역의 불을 켭니다.'],
+  lumen:['LUMEN','빛을 그리는 프로그램','어두운 구역에 빛을 그려 넣는 다섯 개의 프로그램. 팬 GLOW가 들을수록 거리가 선명해집니다.'],
+  seoha:['SEOHA','로그인 게이트의 기록자','현실과 도시 사이 문을 지키며 기억을 기록합니다. 팬 SHORE가 그 기록을 함께 이어 씁니다.']
+};
+const pls=[...document.querySelectorAll('.pl')];
+pls.forEach(b=>b.onclick=()=>{
+  const [tag,title,body]=lore[b.dataset.k];
+  pls.forEach(p=>p.classList.toggle('on',p===b));
+  document.getElementById('st-tag').textContent=tag;
+  document.getElementById('st-title').textContent=title;
+  document.getElementById('st-body').textContent=body;
+});
+const cv=document.getElementById('sky'),cx=cv.getContext('2d'),still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let W,H,stars=[],mx=0,my=0;
+function size(){const r=devicePixelRatio||1;W=cv.offsetWidth;H=cv.offsetHeight;cv.width=W*r;cv.height=H*r;cx.setTransform(r,0,0,r,0,0);
+  stars=Array.from({length:Math.round(W*H/2500)},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random()*.9+.1,t:Math.random()*6}))}
+function draw(ts){cx.clearRect(0,0,W,H);
+  for(const s of stars){const a=.35+.65*Math.abs(Math.sin(s.t+ts/1400*s.z));
+    cx.fillStyle=`rgba(220,224,255,${a*s.z})`;cx.beginPath();cx.arc(s.x+mx*s.z*14,s.y+my*s.z*14,s.z*1.4,0,7);cx.fill();
+    if(!still){s.x-=s.z*.12;if(s.x<-20)s.x=W+20}}
+  if(!still)requestAnimationFrame(draw)}
+document.getElementById('universe').addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/W-.5;my=(e.clientY-r.top)/H-.5;if(still)draw(0)});
+addEventListener('resize',()=>{size();if(still)draw(0)});size();draw(0);
+</script>
+
+</body>
+</html>
