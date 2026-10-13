@@ -53,7 +53,7 @@ nav ul a.uni{color:var(--bg);background:var(--fg);padding:5px 12px;border-radius
 .p3{width:18%;aspect-ratio:1;left:40%;bottom:8%;background:radial-gradient(circle at 35% 30%,#FFC6F3,#FF2BD6 55%,#3d0033);box-shadow:0 0 44px #FF2BD6aa}
 .pl.on{box-shadow:0 0 0 3px #fff,0 0 70px #fff6}
 @media (max-width:860px){.uv-in{grid-template-columns:1fr}.planets{max-width:420px;width:100%;margin:0 auto}}
-.lang{font:500 12px var(--mono);color:var(--muted)}
+.lang{display:flex;gap:2px}.lang button{font:500 12px var(--mono);color:var(--muted);background:none;border:0;cursor:pointer;padding:4px 6px}.lang button.on{color:var(--fg);font-weight:800}
 /* hero slider */
 .hero{position:relative;height:min(78vh,720px);min-height:420px;overflow:hidden;color:#fff;background:#05060A}
 .slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s}
@@ -122,21 +122,21 @@ footer p{margin:0}
 <header><div class="wrap"><nav>
   <a class="logo" href="#top">MOONTIDE</a>
   <ul><li><a href="#artists">Artist</a></li><li><a href="#news">News</a></li><li><a class="uni" href="#universe">Universe</a></li></ul>
-  <span class="lang">KOR / ENG</span>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-l="ko" class="on">KOR</button><button type="button" data-l="en">ENG</button><button type="button" data-l="hu">HUN</button><button type="button" data-l="zh">中文</button></div>
 </nav></div></header>
 
 <main id="top">
   <section class="hero" aria-label="메인 비주얼" style="padding:0">
-    <div class="slide s1 on"><div class="wrap"><small>ORBIT9 · 3RD MINI ALBUM</small><h1>Gravity Well</h1><p>9인의 궤도가 하나로 겹쳐지는 순간. 지금 전 음원 사이트에서 만나 보세요.</p></div></div>
-    <div class="slide s2"><div class="wrap"><small>LUMEN · 1ST FULL ALBUM</small><h1>Bioluminescent</h1><p>스스로 빛나는 다섯 개의 목소리. 정규 1집 발매.</p></div></div>
-    <div class="slide s3"><div class="wrap"><small>SEOHA · DIGITAL SINGLE</small><h1>Low Tide</h1><p>물이 빠진 자리에 남은 이야기. 9월 22일 공개.</p></div></div>
+    <div class="slide s1 on"><div class="wrap"><small>ORBIT9 · 3RD MINI ALBUM</small><h1>Gravity Well</h1><p data-en="The moment nine orbits align as one. Out now on all music platforms." data-hu="Az a pillanat, amikor kilenc pálya eggyé válik. Most minden zenei platformon elérhető." data-zh="九条轨道合而为一的瞬间。现已登陆各大音乐平台。">9인의 궤도가 하나로 겹쳐지는 순간. 지금 전 음원 사이트에서 만나 보세요.</p></div></div>
+    <div class="slide s2"><div class="wrap"><small>LUMEN · 1ST FULL ALBUM</small><h1>Bioluminescent</h1><p data-en="Five voices that shine on their own. The first full-length album is out now." data-hu="Öt hang, amely saját fényében ragyog. Megjelent az első nagylemez." data-zh="五个自带光芒的声音。首张正规专辑现已发行。">스스로 빛나는 다섯 개의 목소리. 정규 1집 발매.</p></div></div>
+    <div class="slide s3"><div class="wrap"><small>SEOHA · DIGITAL SINGLE</small><h1>Low Tide</h1><p data-en="Stories left behind when the tide goes out. Released September 22." data-hu="Történetek, amelyeket az apály hagy maga után. Megjelenés: szeptember 22." data-zh="潮水退去后留下的故事。9月22日公开。">물이 빠진 자리에 남은 이야기. 9월 22일 공개.</p></div></div>
     <div class="dots" role="tablist" aria-label="슬라이드 선택">
       <button class="on" aria-label="1번 슬라이드"></button><button aria-label="2번 슬라이드"></button><button aria-label="3번 슬라이드"></button>
     </div>
   </section>
 
   <section id="artists"><div class="wrap">
-    <div class="head"><h2>Artist</h2><a class="more" href="#artists">전체 아티스트</a></div>
+    <div class="head"><h2>Artist</h2><a class="more" href="#artists" data-en="All artists" data-hu="Összes előadó" data-zh="全部艺人">전체 아티스트</a></div>
     <div class="artists">
       <a class="tile" href="#artists"><div class="bg s1"></div><div><b>ORBIT9</b><span>Boy group · 2021</span></div></a>
       <a class="tile" href="#artists"><div class="bg s2"></div><div><b>LUMEN</b><span>Girl group · 2023</span></div></a>
@@ -145,11 +145,11 @@ footer p{margin:0}
   </div></section>
 
   <section id="news"><div class="wrap">
-    <div class="head"><h2>News</h2><a class="more" href="#news">전체 보기</a></div>
+    <div class="head"><h2>News</h2><a class="more" href="#news" data-en="View all" data-hu="Összes megtekintése" data-zh="查看全部">전체 보기</a></div>
     <ul class="news">
-      <li><a href="#news"><span class="cat">Release</span><strong>SEOHA 디지털 싱글 〈Low Tide〉 발매 안내</strong><time>2026.09.22</time></a></li>
-      <li><a href="#news"><span class="cat">Audition</span><strong>MOONTIDE 글로벌 오디션 2026 온라인 접수 시작 (10.13 – 11.09)</strong><time>2026.09.30</time></a></li>
-      <li><a href="#news"><span class="cat">Concert</span><strong>LUMEN 첫 단독 콘서트 〈GLOW HOUR〉 서울 공연 티켓 오픈</strong><time>2026.09.15</time></a></li>
+      <li><a href="#news"><span class="cat">Release</span><strong data-en="SEOHA digital single 〈Low Tide〉 release" data-hu="SEOHA digitális kislemez 〈Low Tide〉 megjelenése" data-zh="SEOHA 数字单曲〈Low Tide〉发行公告">SEOHA 디지털 싱글 〈Low Tide〉 발매 안내</strong><time>2026.09.22</time></a></li>
+      <li><a href="#news"><span class="cat">Audition</span><strong data-en="MOONTIDE Global Audition 2026: online applications open (Oct 13 – Nov 9)" data-hu="MOONTIDE Global Audition 2026: elindult az online jelentkezés (okt. 13. – nov. 9.)" data-zh="MOONTIDE 全球选秀 2026 线上报名开启（10.13 – 11.09）">MOONTIDE 글로벌 오디션 2026 온라인 접수 시작 (10.13 – 11.09)</strong><time>2026.09.30</time></a></li>
+      <li><a href="#news"><span class="cat">Concert</span><strong data-en="LUMEN first solo concert 〈GLOW HOUR〉 Seoul tickets now on sale" data-hu="LUMEN első önálló koncertje 〈GLOW HOUR〉: a szöuli jegyek már kaphatók" data-zh="LUMEN 首场个人演唱会〈GLOW HOUR〉首尔站门票开售">LUMEN 첫 단독 콘서트 〈GLOW HOUR〉 서울 공연 티켓 오픈</strong><time>2026.09.15</time></a></li>
     </ul>
   </div></section>
 
@@ -159,12 +159,12 @@ footer p{margin:0}
       <div class="uv-copy">
         <small>MOONTIDE WORLDVIEW</small>
         <h2>JS UNIVERSE</h2>
-        <p>노래 한 번에 픽셀 하나. 그 빛으로 지은 가상 도시 <b>TIDE://CITY</b>.<br>아티스트는 현실과 이 도시에 각각 존재합니다.</p>
-        <p class="hint">행성을 눌러 보세요.</p>
+        <p data-en="One play lights one pixel. A virtual city built from that light: &lt;b&gt;TIDE://CITY&lt;/b&gt;.&lt;br&gt;Each artist exists both in the real world and in this city." data-hu="Egy lejátszás, egy pixel. Ebből a fényből épült virtuális város: &lt;b&gt;TIDE://CITY&lt;/b&gt;.&lt;br&gt;Minden előadó a valós világban és ebben a városban is létezik." data-zh="播放一次，点亮一个像素。由这些光芒建成的虚拟城市 &lt;b&gt;TIDE://CITY&lt;/b&gt;。&lt;br&gt;每位艺人同时存在于现实世界与这座城市。">노래 한 번에 픽셀 하나. 그 빛으로 지은 가상 도시 <b>TIDE://CITY</b>.<br>아티스트는 현실과 이 도시에 각각 존재합니다.</p>
+        <p class="hint" data-en="Tap a planet." data-hu="Kattints egy bolygóra." data-zh="点击星球看看。">행성을 눌러 보세요.</p>
         <div class="story" id="story" aria-live="polite">
           <small id="st-tag">PROLOGUE · LOG 000</small>
-          <h3 id="st-title">첫 번째 접속</h3>
-          <p id="st-body">빈 화면에 첫 노래가 재생되자 픽셀 하나가 켜졌습니다. 도시는 팬들이 들은 노래로 지어지고, 노래가 멈추면 어두워집니다.</p>
+          <h3 id="st-title" data-en="First Login" data-hu="Első bejelentkezés" data-zh="第一次登录">첫 번째 접속</h3>
+          <p id="st-body" data-en="When the first song played on an empty screen, a single pixel lit up. The city is built from the songs fans hear, and it dims when the music stops." data-hu="Amikor az első dal felcsendült az üres képernyőn, felgyulladt egyetlen pixel. A várost a rajongók által hallgatott dalok építik, és elsötétül, ha a zene elhallgat." data-zh="当第一首歌在空白屏幕上播放时，一个像素亮了起来。城市由粉丝听过的歌曲建成，音乐停止时便会暗下来。">빈 화면에 첫 노래가 재생되자 픽셀 하나가 켜졌습니다. 도시는 팬들이 들은 노래로 지어지고, 노래가 멈추면 어두워집니다.</p>
         </div>
       </div>
       <div class="planets" role="group" aria-label="아티스트 행성">
@@ -179,8 +179,8 @@ footer p{margin:0}
 <footer><div class="wrap">
   <div class="logo">MOONTIDE</div>
   <div class="cols">
-    <p>(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment</p>
-    <p>가상의 회사·아티스트로 만든 연습용 디자인입니다.</p>
+    <p data-en="MOONTIDE Entertainment Inc. · Seoul, Korea (fictional address)&lt;br&gt;© 2026 MOONTIDE Entertainment" data-hu="MOONTIDE Entertainment Inc. · Szöul, Korea (fiktív cím)&lt;br&gt;© 2026 MOONTIDE Entertainment" data-zh="MOONTIDE娱乐有限公司 · 韩国首尔（虚构地址）&lt;br&gt;© 2026 MOONTIDE Entertainment">(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment</p>
+    <p data-en="A practice design featuring a fictional company and artists." data-hu="Gyakorló design kitalált céggel és előadókkal." data-zh="以虚构公司与艺人制作的练习用设计。">가상의 회사·아티스트로 만든 연습용 디자인입니다.</p>
   </div>
 </div></footer>
 
@@ -196,9 +196,26 @@ const lore={
   lumen:['LUMEN','빛을 그리는 프로그램','어두운 구역에 빛을 그려 넣는 다섯 개의 프로그램. 팬 GLOW가 들을수록 거리가 선명해집니다.'],
   seoha:['SEOHA','로그인 게이트의 기록자','현실과 도시 사이 문을 지키며 기억을 기록합니다. 팬 SHORE가 그 기록을 함께 이어 씁니다.']
 };
+const loreEn={
+  orbit:['ORBIT9','Keepers of the Nine Districts','Each member\'s avatar guards one of the city\'s nine districts. Signals from SATELLITE fans light them up.'],
+  lumen:['LUMEN','Programs That Paint Light','Five programs that paint light into the dark districts. The more GLOW fans listen, the sharper the streets become.'],
+  seoha:['SEOHA','Recorder of the Login Gate','Guards the door between the real world and the city, recording memories. SHORE fans keep writing the record together.']
+};
+const loreHu={
+  orbit:['ORBIT9','A kilenc kerület őrzői','A város kilenc kerületét egy-egy tag avatárja őrzi. A SATELLITE rajongók jelei kapcsolják fel a kerületek fényeit.'],
+  lumen:['LUMEN','Fényt festő programok','Öt program, amely fényt fest a sötét kerületekbe. Minél többet hallgatnak a GLOW rajongók, annál élesebbek az utcák.'],
+  seoha:['SEOHA','A bejelentkezési kapu krónikása','A valós világ és a város közötti kaput őrzi, és feljegyzi az emlékeket. A SHORE rajongók együtt írják tovább a krónikát.']
+};
+const loreZh={
+  orbit:['ORBIT9','九个区域的守护者','城市的九个区域由成员的虚拟形象各守护一个。SATELLITE 粉丝的信号点亮各区域的灯光。'],
+  lumen:['LUMEN','描绘光芒的程序','五个为黑暗区域描绘光芒的程序。GLOW 粉丝听得越多，街道就越清晰。'],
+  seoha:['SEOHA','登录之门的记录者','守护现实与城市之间的门，记录记忆。SHORE 粉丝一起续写这份记录。']
+};
+const LORE={ko:lore,en:loreEn,hu:loreHu,zh:loreZh};
+let lang='ko';
 const pls=[...document.querySelectorAll('.pl')];
 pls.forEach(b=>b.onclick=()=>{
-  const [tag,title,body]=lore[b.dataset.k];
+  const [tag,title,body]=LORE[lang][b.dataset.k];
   pls.forEach(p=>p.classList.toggle('on',p===b));
   document.getElementById('st-tag').textContent=tag;
   document.getElementById('st-title').textContent=title;
@@ -214,6 +231,17 @@ function draw(ts){cx.clearRect(0,0,W,H);
     if(!still){s.x-=s.z*.12;if(s.x<-20)s.x=W+20}}
   if(!still)requestAnimationFrame(draw)}
 document.getElementById('universe').addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/W-.5;my=(e.clientY-r.top)/H-.5;if(still)draw(0)});
+// KOR / ENG 전환
+const els=[...document.querySelectorAll('[data-en]')];
+els.forEach(e=>e.dataset.ko=e.innerHTML);
+const lbtn=[...document.querySelectorAll('.lang button')];
+lbtn.forEach(b=>b.onclick=()=>{
+  lang=b.dataset.l;
+  document.documentElement.lang=lang==='zh'?'zh-Hans':lang;
+  lbtn.forEach(x=>x.classList.toggle('on',x===b));
+  els.forEach(e=>e.innerHTML=e.dataset[lang]);
+  const on=document.querySelector('.pl.on');if(on)on.click();
+});
 addEventListener('resize',()=>{size();if(still)draw(0)});size();draw(0);
 </script>
 
