@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="MOONTIDE Entertainment - 가상 엔터테인먼트사 연습용 홈페이지. 아티스트 ORBIT9, LUMEN, SEOHA와 JS UNIVERSE 세계관.">
+<meta name="naver-site-verification" content="728dda962851e6ce5673fdf8419e861c1f51f630" />
+<title>JS UNIVERSE · MOONTIDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 기업형 엔터 사이트 — 풀폭 비주얼 슬라이더, 기업 메뉴, 큰 아티스트 타일, 뉴스 리스트, 사업영역, 기업정보 푸터 */
+:root{
+  --bg:#FFFFFF; --surface:#F4F4F4; --fg:#0A0A0A; --muted:#6B6B6B; --line:#E2E2E2; --accent:#D1009C; --neon:#FF2BD6;
+  --display:"Bricolage Grotesque","Noto Sans KR",system-ui,sans-serif;
+  --body:"Noto Sans KR",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.65 var(--body)}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:24px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:18px;flex-wrap:wrap}
+.logo{font:800 22px var(--display);letter-spacing:.06em}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:500 13px var(--body);letter-spacing:.08em;text-transform:uppercase;flex-wrap:wrap}
+nav ul a{color:var(--muted)} nav ul a:hover{color:var(--fg)}
+nav ul a.uni{color:var(--bg);background:var(--fg);padding:5px 12px;border-radius:99px}
+#universe{scroll-margin-top:60px}
+/* universe: 의도적으로 항상 어두운 우주 화면 */
+.uv{position:relative;background:#000;color:#E8E9F5;overflow:hidden}
+#sky{position:absolute;inset:0;width:100%;height:100%}
+.uv-in{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.uv-in > *{min-width:0}
+.uv small{font:500 12px var(--mono);letter-spacing:.18em;color:var(--neon)}
+.uv h2{font-size:clamp(40px,7vw,80px);margin:8px 0 18px;color:#fff;text-shadow:0 0 18px #FF2BD688}
+.uv p{color:#D6D6D6;max-width:34em;font-size:17px} .uv p b{color:#fff}
+.uv .hint{font-size:13px;color:#7A7E99}
+.story{margin-top:22px;border-left:2px solid var(--neon);padding:4px 0 4px 18px}
+.story h3{font:800 24px var(--display);margin:4px 0 6px;color:#fff}
+.story p{margin:0}
+.planets{position:relative;aspect-ratio:1;max-width:100%}
+.pl{position:absolute;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;color:#fff;font:800 13px var(--display);letter-spacing:.08em;transition:transform .3s,box-shadow .3s}
+.pl span{transform:translateY(calc(100% + 30px))}
+.pl:hover,.pl.on{transform:scale(1.08)}
+.p1{width:34%;aspect-ratio:1;left:8%;top:12%;background:radial-gradient(circle at 35% 30%,#fff,#9a9a9a 55%,#1a1a1a);box-shadow:0 0 50px #ffffff55}
+.p2{width:24%;aspect-ratio:1;right:6%;top:30%;background:repeating-linear-gradient(0deg,#ffffff30 0 1px,transparent 1px 8px),#000;border:1.5px solid #fff;box-shadow:0 0 30px #ffffff33}
+.p3{width:18%;aspect-ratio:1;left:40%;bottom:8%;background:radial-gradient(circle at 35% 30%,#FFC6F3,#FF2BD6 55%,#3d0033);box-shadow:0 0 44px #FF2BD6aa}
+.pl.on{box-shadow:0 0 0 3px #fff,0 0 70px #fff6}
+@media (max-width:860px){.uv-in{grid-template-columns:1fr}.planets{max-width:420px;width:100%;margin:0 auto}}
+.lang{font:500 13px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;cursor:pointer}
+/* hero slider */
+.hero{position:relative;height:min(78vh,720px);min-height:420px;overflow:hidden;color:#fff;background:#05060A}
+.slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s}
+.slide.on{opacity:1}
+/* 표지: 블랙·화이트 + 네온 마젠타 한 색 */
+.s1{background:radial-gradient(circle at 72% 38%,transparent 0 17%,var(--neon) 17.4% 18%,transparent 18.6%),radial-gradient(circle at 72% 38%,#fff 0,#777 9%,transparent 30%),#000}
+.s2{background:linear-gradient(to top,#000 5%,transparent 70%),repeating-linear-gradient(90deg,#ffffff1f 0 1px,transparent 1px 56px),repeating-linear-gradient(0deg,#ffffff1f 0 1px,transparent 1px 56px),radial-gradient(ellipse at 50% 100%,#FF2BD666,transparent 60%),#000}
+.s3{background:repeating-linear-gradient(0deg,#00000066 0 2px,transparent 2px 5px),linear-gradient(135deg,#000 30%,#2a2a2a 60%,var(--neon) 140%)}
+.slide .wrap{width:100%;padding-block:56px}
+.slide small{font:500 12px var(--mono);letter-spacing:.18em;opacity:.8}
+.slide h1{font:800 clamp(48px,10vw,128px)/.9 var(--display);letter-spacing:-.02em;margin:10px 0 14px}
+.slide p{margin:0;max-width:30em;opacity:.85}
+.dots{position:absolute;right:24px;bottom:28px;display:flex;gap:10px;z-index:2}
+.dots button{width:36px;height:3px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer}
+.dots button.on{background:#fff}
+/* sections */
+section{padding-block:88px}
+.head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+h2{font:800 clamp(32px,5vw,52px)/1 var(--display);letter-spacing:-.01em;margin:0}
+.more{font:500 13px var(--body);color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:2px}
+.more:hover{color:var(--fg)}
+/* artists */
+.artists{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.tile{position:relative;aspect-ratio:3/4;max-width:100%;color:#fff;overflow:hidden;display:flex;align-items:flex-end;padding:22px}
+.tile .bg{position:absolute;inset:0;transition:transform .6s}
+.tile:hover .bg{transform:scale(1.04)}
+.tile div:last-child{position:relative}
+.tile b{display:block;font:800 30px var(--display);letter-spacing:.03em}
+.tile span{font-size:13px;opacity:.8}
+/* news */
+.news{list-style:none;margin:0;padding:0;border-top:1px solid var(--fg)}
+.news li{border-bottom:1px solid var(--line)}
+.news summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:110px 1fr 120px;gap:20px;padding-block:22px;align-items:baseline}
+.news summary::-webkit-details-marker{display:none}.news summary:hover strong{text-decoration:underline}.news .body{margin:0 0 22px 130px;max-width:46em;color:var(--muted)}.news details[open] strong{color:var(--accent)}
+.news .cat{font:500 12px var(--mono);letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.news time{font:500 13px var(--mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.news strong{font-weight:500;min-width:0}
+/* business */
+.biz{background:var(--surface)}
+.bizgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.biz article{background:var(--surface);padding:28px 24px;display:grid;gap:10px;align-content:start}
+.biz .no{font:500 12px var(--mono);color:var(--muted)}
+.biz h3{font:800 22px var(--display);margin:0}
+.biz p{margin:0;color:var(--muted);font-size:14px}
+/* corp links */
+.corp{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.corp a{border:1px solid var(--line);padding:28px;display:grid;gap:6px}
+.corp a:hover{border-color:var(--fg)}
+.corp b{font:800 24px var(--display)}
+.corp span{color:var(--muted);font-size:14px}
+footer{background:#0B0C11;color:#9499AC;padding-block:48px;font-size:13px}
+footer .logo{color:#EDEEF4;font-size:18px}
+footer .cols{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:18px}
+footer p{margin:0}
+@media (max-width:860px){
+  .artists{grid-template-columns:1fr 1fr}.bizgrid{grid-template-columns:1fr 1fr}.corp{grid-template-columns:1fr}
+  nav ul{gap:18px} section{padding-block:60px}
+  .news summary{grid-template-columns:1fr;gap:4px}.news .body{margin-left:0} .news time{text-align:left}
+}
+@media (max-width:480px){.artists,.bizgrid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.slide,.tile .bg{transition:none}}
+.page-head{padding-block:72px 32px}.back{font-size:13px;color:var(--muted)}.back:hover{color:var(--fg)}
+.page-head h1{font:800 clamp(40px,7vw,80px)/1 var(--display);margin:16px 0 12px;letter-spacing:-.01em}.page-head p{color:var(--muted);margin:0}
+.ar{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;padding-block:48px;border-top:1px solid var(--line);scroll-margin-top:80px}
+.ar .tile{aspect-ratio:4/3}.ar h2{font-size:clamp(36px,5vw,56px)}.ar .type{color:var(--muted);margin:8px 0 24px}
+.ar dl{display:grid;grid-template-columns:auto 1fr;gap:12px 24px;margin:0}.ar dt{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding-top:3px}.ar dd{margin:0}
+.ar .go{display:inline-block;margin-top:24px;font-size:13px;border-bottom:1px solid var(--line);color:var(--muted)}.ar .go:hover{color:var(--fg)}
+@media (max-width:760px){.ar{grid-template-columns:1fr;gap:24px}}
+.chs{padding-block:72px}.chs h2{margin-bottom:28px}.chg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-bottom:40px}
+.ch{border:1px solid var(--line);border-radius:8px;padding:24px;display:grid;gap:8px;align-content:start}.ch .no{font:500 12px var(--mono);letter-spacing:.14em;color:var(--accent)}
+.ch h3{font:800 20px var(--display);margin:0}.ch p{margin:0;color:var(--muted)}.back{font-size:13px;color:var(--muted)}
+@media (max-width:860px){.chg{grid-template-columns:1fr}}
+nav ul a[aria-current]{color:var(--fg);font-weight:700;text-decoration:underline;text-underline-offset:6px}nav ul a.uni[aria-current]{color:var(--bg);text-decoration:none}
+@media (max-width:600px){nav{display:grid;grid-template-columns:1fr auto;row-gap:12px}.lang{order:2}nav ul{order:3;grid-column:1/-1}}
+</style>
+
+</head>
+<body style="margin:0">
+<header><div class="wrap"><nav>
+  <a class="logo" href="index.html">MOONTIDE</a>
+  <ul><li><a href="artists.html">Artist</a></li><li><a href="news.html">News</a></li><li><a href="audition.html">Audition</a></li><li><a class="uni" href="universe.html" aria-current="page">Universe</a></li></ul>
+  <select class="lang" id="lang" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option><option value="hu">Magyar</option></select>
+</nav></div></header>
+<section id="universe" class="uv" style="min-height:calc(100vh - 70px);display:flex;align-items:center" aria-label="JS UNIVERSE 세계관">
+    <canvas id="sky" aria-hidden="true"></canvas>
+    <div class="wrap uv-in">
+      <div class="uv-copy">
+        <small>MOONTIDE WORLDVIEW</small>
+        <h2>JS UNIVERSE</h2>
+        <p data-i="intro">노래 한 번에 픽셀 하나. 그 빛으로 지은 가상 도시 <b>TIDE://CITY</b>.<br>아티스트는 현실과 이 도시에 각각 존재합니다.</p>
+        <p class="hint" data-i="hint">행성을 눌러 보세요.</p>
+        <div class="story" id="story" aria-live="polite">
+          <small id="st-tag">PROLOGUE · LOG 000</small>
+          <h3 id="st-title" data-i="pt">첫 번째 접속</h3>
+          <p id="st-body" data-i="pb">빈 화면에 첫 노래가 재생되자 픽셀 하나가 켜졌습니다. 도시는 팬들이 들은 노래로 지어지고, 노래가 멈추면 어두워집니다.</p>
+        </div>
+      </div>
+      <div class="planets" role="group" aria-label="아티스트 행성">
+        <button class="pl p1" data-k="orbit"><span>ORBIT9</span></button>
+        <button class="pl p2" data-k="lumen"><span>LUMEN</span></button>
+        <button class="pl p3" data-k="seoha"><span>SEOHA</span></button>
+      </div>
+    </div>
+  </section><main class="wrap"><section class="chs"><h2><span data-i="chapters">세 개의 이야기</span></h2><div class="chg"><article class="ch" id="ch-orbit"><span class="no">ORBIT9</span><h3><span data-i="orbitT">아홉 구역의 관리자</span></h3><p data-i="orbitB">도시의 아홉 구역을 멤버 아바타가 하나씩 지킵니다. 팬 SATELLITE의 신호가 구역의 불을 켭니다.</p></article><article class="ch" id="ch-lumen"><span class="no">LUMEN</span><h3><span data-i="lumenT">빛을 그리는 프로그램</span></h3><p data-i="lumenB">어두운 구역에 빛을 그려 넣는 다섯 개의 프로그램. 팬 GLOW가 들을수록 거리가 선명해집니다.</p></article><article class="ch" id="ch-seoha"><span class="no">SEOHA</span><h3><span data-i="seohaT">로그인 게이트의 기록자</span></h3><p data-i="seohaB">현실과 도시 사이 문을 지키며 기억을 기록합니다. 팬 SHORE가 그 기록을 함께 이어 씁니다.</p></article></div><a class="back" href="index.html"><span data-i="back">← 홈으로</span></a></section></main>
+<footer><div class="wrap">
+  <div class="logo">MOONTIDE</div>
+  <div class="cols"><p data-i="foot1">(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment</p><p data-i="foot2">가상의 회사·아티스트로 만든 연습용 디자인입니다.</p></div>
+</div></footer>
+<script>
+const I={"ko": {"back": "← 홈으로", "foot1": "(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment", "foot2": "가상의 회사·아티스트로 만든 연습용 디자인입니다.", "intro": "노래 한 번에 픽셀 하나. 그 빛으로 지은 가상 도시 <b>TIDE://CITY</b>.<br>아티스트는 현실과 이 도시에 각각 존재합니다.", "hint": "행성을 눌러 보세요.", "pt": "첫 번째 접속", "pb": "빈 화면에 첫 노래가 재생되자 픽셀 하나가 켜졌습니다. 도시는 팬들이 들은 노래로 지어지고, 노래가 멈추면 어두워집니다.", "chapters": "세 개의 이야기", "orbitT": "아홉 구역의 관리자", "orbitB": "도시의 아홉 구역을 멤버 아바타가 하나씩 지킵니다. 팬 SATELLITE의 신호가 구역의 불을 켭니다.", "lumenT": "빛을 그리는 프로그램", "lumenB": "어두운 구역에 빛을 그려 넣는 다섯 개의 프로그램. 팬 GLOW가 들을수록 거리가 선명해집니다.", "seohaT": "로그인 게이트의 기록자", "seohaB": "현실과 도시 사이 문을 지키며 기억을 기록합니다. 팬 SHORE가 그 기록을 함께 이어 씁니다."}, "en": {"back": "← Home", "foot1": "MOONTIDE Entertainment Inc. · Seoul, Korea (fictional address)<br>© 2026 MOONTIDE Entertainment", "foot2": "A practice design featuring a fictional company and artists.", "intro": "One play lights one pixel. A virtual city built from that light: <b>TIDE://CITY</b>.<br>Each artist exists both in the real world and in this city.", "hint": "Tap a planet.", "pt": "First Login", "pb": "When the first song played on an empty screen, a single pixel lit up. The city is built from the songs fans hear, and it dims when the music stops.", "chapters": "Three stories", "orbitT": "Keepers of the Nine Districts", "orbitB": "Each member's avatar guards one of the city's nine districts. Signals from SATELLITE fans light them up.", "lumenT": "Programs That Paint Light", "lumenB": "Five programs that paint light into the dark districts. The more GLOW fans listen, the sharper the streets become.", "seohaT": "Recorder of the Login Gate", "seohaB": "Guards the door between the real world and the city, recording memories. SHORE fans keep writing the record together."}, "hu": {"back": "← Kezdőlap", "foot1": "MOONTIDE Entertainment Inc. · Szöul, Korea (fiktív cím)<br>© 2026 MOONTIDE Entertainment", "foot2": "Gyakorló design kitalált céggel és előadókkal.", "intro": "Egy lejátszás, egy pixel. Ebből a fényből épült virtuális város: <b>TIDE://CITY</b>.<br>Minden előadó a valós világban és ebben a városban is létezik.", "hint": "Kattints egy bolygóra.", "pt": "Első bejelentkezés", "pb": "Amikor az első dal felcsendült az üres képernyőn, felgyulladt egyetlen pixel. A várost a rajongók által hallgatott dalok építik, és elsötétül, ha a zene elhallgat.", "chapters": "Három történet", "orbitT": "A kilenc kerület őrzői", "orbitB": "A város kilenc kerületét egy-egy tag avatárja őrzi. A SATELLITE rajongók jelei kapcsolják fel a kerületek fényeit.", "lumenT": "Fényt festő programok", "lumenB": "Öt program, amely fényt fest a sötét kerületekbe. Minél többet hallgatnak a GLOW rajongók, annál élesebbek az utcák.", "seohaT": "A bejelentkezési kapu krónikása", "seohaB": "A valós világ és a város közötti kaput őrzi, és feljegyzi az emlékeket. A SHORE rajongók együtt írják tovább a krónikát."}, "zh": {"back": "← 返回首页", "foot1": "MOONTIDE娱乐有限公司 · 韩国首尔（虚构地址）<br>© 2026 MOONTIDE Entertainment", "foot2": "以虚构公司与艺人制作的练习用设计。", "intro": "播放一次，点亮一个像素。由这些光芒建成的虚拟城市 <b>TIDE://CITY</b>。<br>每位艺人同时存在于现实世界与这座城市。", "hint": "点击星球看看。", "pt": "第一次登录", "pb": "当第一首歌在空白屏幕上播放时，一个像素亮了起来。城市由粉丝听过的歌曲建成，音乐停止时便会暗下来。", "chapters": "三个故事", "orbitT": "九个区域的守护者", "orbitB": "城市的九个区域由成员的虚拟形象各守护一个。SATELLITE 粉丝的信号点亮各区域的灯光。", "lumenT": "描绘光芒的程序", "lumenB": "五个为黑暗区域描绘光芒的程序。GLOW 粉丝听得越多，街道就越清晰。", "seohaT": "登录之门的记录者", "seohaB": "守护现实与城市之间的门，记录记忆。SHORE 粉丝一起续写这份记录。"}, "ja": {"back": "← ホームへ", "foot1": "株式会社MOONTIDEエンターテインメント · 韓国ソウル（架空の住所）<br>© 2026 MOONTIDE Entertainment", "foot2": "架空の会社とアーティストで制作した練習用デザインです。", "intro": "1回の再生で、ピクセルがひとつ。その光でつくられた仮想都市 <b>TIDE://CITY</b>。<br>アーティストは現実とこの都市の両方に存在します。", "hint": "惑星をタップしてみてください。", "pt": "はじめてのログイン", "pb": "空っぽの画面で最初の曲が流れると、ピクセルがひとつ灯りました。都市はファンが聴いた曲でつくられ、音楽が止まると暗くなります。", "chapters": "3つの物語", "orbitT": "9つの区域の管理者", "orbitB": "都市の9つの区域を、メンバーのアバターがひとつずつ守っています。SATELLITEファンの信号が区域に明かりを灯します。", "lumenT": "光を描くプログラム", "lumenB": "暗い区域に光を描き込む5つのプログラム。GLOWファンが聴くほど、街並みが鮮明になります。", "seohaT": "ログインゲートの記録者", "seohaB": "現実と都市のあいだの扉を守り、記憶を記録します。SHOREファンがその記録を一緒に書き継いでいきます。"}, "es": {"back": "← Inicio", "foot1": "MOONTIDE Entertainment Inc. · Seúl, Corea (dirección ficticia)<br>© 2026 MOONTIDE Entertainment", "foot2": "Diseño de práctica con una empresa y artistas ficticios.", "intro": "Una reproducción, un píxel. Una ciudad virtual construida con esa luz: <b>TIDE://CITY</b>.<br>Cada artista existe tanto en el mundo real como en esta ciudad.", "hint": "Toca un planeta.", "pt": "Primer inicio de sesión", "pb": "Cuando sonó la primera canción en una pantalla vacía, se encendió un solo píxel. La ciudad se construye con las canciones que escuchan los fans y se oscurece cuando la música se detiene.", "chapters": "Tres historias", "orbitT": "Guardianes de los nueve distritos", "orbitB": "El avatar de cada miembro protege uno de los nueve distritos de la ciudad. Las señales de los fans SATELLITE encienden sus luces.", "lumenT": "Programas que pintan luz", "lumenB": "Cinco programas que pintan luz en los distritos oscuros. Cuanto más escuchan los fans GLOW, más nítidas se ven las calles.", "seohaT": "Cronista de la puerta de acceso", "seohaB": "Custodia la puerta entre el mundo real y la ciudad y registra los recuerdos. Los fans SHORE siguen escribiendo ese registro juntos."}, "fr": {"back": "← Accueil", "foot1": "MOONTIDE Entertainment Inc. · Séoul, Corée (adresse fictive)<br>© 2026 MOONTIDE Entertainment", "foot2": "Design d'entraînement avec une entreprise et des artistes fictifs.", "intro": "Une écoute, un pixel. Une ville virtuelle bâtie avec cette lumière : <b>TIDE://CITY</b>.<br>Chaque artiste existe à la fois dans le monde réel et dans cette ville.", "hint": "Touchez une planète.", "pt": "Première connexion", "pb": "Quand la première chanson a résonné sur un écran vide, un seul pixel s'est allumé. La ville se construit avec les chansons écoutées par les fans, et s'assombrit quand la musique s'arrête.", "chapters": "Trois histoires", "orbitT": "Gardiens des neuf districts", "orbitB": "L'avatar de chaque membre veille sur l'un des neuf districts de la ville. Les signaux des fans SATELLITE allument leurs lumières.", "lumenT": "Programmes qui peignent la lumière", "lumenB": "Cinq programmes qui peignent la lumière dans les districts sombres. Plus les fans GLOW écoutent, plus les rues deviennent nettes.", "seohaT": "Archiviste de la porte de connexion", "seohaB": "Veille sur la porte entre le monde réel et la ville et consigne les souvenirs. Les fans SHORE continuent d'écrire ce récit ensemble."}};
+const sel=document.getElementById('lang');let lang='ko';
+function setLang(v){if(!I[v])v='ko';lang=v;sel.value=v;document.documentElement.lang=v==='zh'?'zh-Hans':v;
+  document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=I[v][e.dataset.i]);
+  try{localStorage.setItem('mt-lang',v)}catch(e){}if(window.onLang)onLang(v);}
+sel.onchange=e=>setLang(e.target.value);
+const LORE={"ko": {"orbit": ["ORBIT9", "아홉 구역의 관리자", "도시의 아홉 구역을 멤버 아바타가 하나씩 지킵니다. 팬 SATELLITE의 신호가 구역의 불을 켭니다."], "lumen": ["LUMEN", "빛을 그리는 프로그램", "어두운 구역에 빛을 그려 넣는 다섯 개의 프로그램. 팬 GLOW가 들을수록 거리가 선명해집니다."], "seoha": ["SEOHA", "로그인 게이트의 기록자", "현실과 도시 사이 문을 지키며 기억을 기록합니다. 팬 SHORE가 그 기록을 함께 이어 씁니다."]}, "en": {"orbit": ["ORBIT9", "Keepers of the Nine Districts", "Each member's avatar guards one of the city's nine districts. Signals from SATELLITE fans light them up."], "lumen": ["LUMEN", "Programs That Paint Light", "Five programs that paint light into the dark districts. The more GLOW fans listen, the sharper the streets become."], "seoha": ["SEOHA", "Recorder of the Login Gate", "Guards the door between the real world and the city, recording memories. SHORE fans keep writing the record together."]}, "hu": {"orbit": ["ORBIT9", "A kilenc kerület őrzői", "A város kilenc kerületét egy-egy tag avatárja őrzi. A SATELLITE rajongók jelei kapcsolják fel a kerületek fényeit."], "lumen": ["LUMEN", "Fényt festő programok", "Öt program, amely fényt fest a sötét kerületekbe. Minél többet hallgatnak a GLOW rajongók, annál élesebbek az utcák."], "seoha": ["SEOHA", "A bejelentkezési kapu krónikása", "A valós világ és a város közötti kaput őrzi, és feljegyzi az emlékeket. A SHORE rajongók együtt írják tovább a krónikát."]}, "zh": {"orbit": ["ORBIT9", "九个区域的守护者", "城市的九个区域由成员的虚拟形象各守护一个。SATELLITE 粉丝的信号点亮各区域的灯光。"], "lumen": ["LUMEN", "描绘光芒的程序", "五个为黑暗区域描绘光芒的程序。GLOW 粉丝听得越多，街道就越清晰。"], "seoha": ["SEOHA", "登录之门的记录者", "守护现实与城市之间的门，记录记忆。SHORE 粉丝一起续写这份记录。"]}, "es": {"orbit": ["ORBIT9", "Guardianes de los nueve distritos", "El avatar de cada miembro protege uno de los nueve distritos de la ciudad. Las señales de los fans SATELLITE encienden sus luces."], "lumen": ["LUMEN", "Programas que pintan luz", "Cinco programas que pintan luz en los distritos oscuros. Cuanto más escuchan los fans GLOW, más nítidas se ven las calles."], "seoha": ["SEOHA", "Cronista de la puerta de acceso", "Custodia la puerta entre el mundo real y la ciudad y registra los recuerdos. Los fans SHORE siguen escribiendo ese registro juntos."]}, "ja": {"orbit": ["ORBIT9", "9つの区域の管理者", "都市の9つの区域を、メンバーのアバターがひとつずつ守っています。SATELLITEファンの信号が区域に明かりを灯します。"], "lumen": ["LUMEN", "光を描くプログラム", "暗い区域に光を描き込む5つのプログラム。GLOWファンが聴くほど、街並みが鮮明になります。"], "seoha": ["SEOHA", "ログインゲートの記録者", "現実と都市のあいだの扉を守り、記憶を記録します。SHOREファンがその記録を一緒に書き継いでいきます。"]}, "fr": {"orbit": ["ORBIT9", "Gardiens des neuf districts", "L'avatar de chaque membre veille sur l'un des neuf districts de la ville. Les signaux des fans SATELLITE allument leurs lumières."], "lumen": ["LUMEN", "Programmes qui peignent la lumière", "Cinq programmes qui peignent la lumière dans les districts sombres. Plus les fans GLOW écoutent, plus les rues deviennent nettes."], "seoha": ["SEOHA", "Archiviste de la porte de connexion", "Veille sur la porte entre le monde réel et la ville et consigne les souvenirs. Les fans SHORE continuent d'écrire ce récit ensemble."]}};
+const pls=[...document.querySelectorAll('.pl')];
+pls.forEach(b=>b.onclick=()=>{const [tag,title,body]=LORE[lang][b.dataset.k];pls.forEach(p=>p.classList.toggle('on',p===b));
+  document.getElementById('st-tag').textContent=tag;document.getElementById('st-title').textContent=title;document.getElementById('st-body').textContent=body;});
+window.onLang=()=>{const on=document.querySelector('.pl.on');if(on)on.click();};
+const cv=document.getElementById('sky'),cx=cv.getContext('2d'),still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let W,H,stars=[],mx=0,my=0;
+function size(){const r=devicePixelRatio||1;W=cv.offsetWidth;H=cv.offsetHeight;cv.width=W*r;cv.height=H*r;cx.setTransform(r,0,0,r,0,0);
+  stars=Array.from({length:Math.round(W*H/2500)},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random()*.9+.1,t:Math.random()*6}))}
+function draw(ts){cx.clearRect(0,0,W,H);
+  for(const s of stars){const a=.35+.65*Math.abs(Math.sin(s.t+ts/1400*s.z));
+    cx.fillStyle=`rgba(220,224,255,${a*s.z})`;cx.beginPath();cx.arc(s.x+mx*s.z*14,s.y+my*s.z*14,s.z*1.4,0,7);cx.fill();
+    if(!still){s.x-=s.z*.12;if(s.x<-20)s.x=W+20}}
+  if(!still)requestAnimationFrame(draw)}
+document.getElementById('universe').addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/W-.5;my=(e.clientY-r.top)/H-.5;if(still)draw(0)});
+addEventListener('resize',()=>{size();if(still)draw(0)});size();draw(0);
+
+try{setLang(localStorage.getItem('mt-lang')||'ko')}catch(e){setLang('ko')}
+</script>
+</body>
+</html>

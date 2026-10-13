@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="MOONTIDE Entertainment - 가상 엔터테인먼트사 연습용 홈페이지. 아티스트 ORBIT9, LUMEN, SEOHA와 JS UNIVERSE 세계관.">
+<meta name="naver-site-verification" content="728dda962851e6ce5673fdf8419e861c1f51f630" />
+<title>News · MOONTIDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 기업형 엔터 사이트 — 풀폭 비주얼 슬라이더, 기업 메뉴, 큰 아티스트 타일, 뉴스 리스트, 사업영역, 기업정보 푸터 */
+:root{
+  --bg:#FFFFFF; --surface:#F4F4F4; --fg:#0A0A0A; --muted:#6B6B6B; --line:#E2E2E2; --accent:#D1009C; --neon:#FF2BD6;
+  --display:"Bricolage Grotesque","Noto Sans KR",system-ui,sans-serif;
+  --body:"Noto Sans KR",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.65 var(--body)}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:24px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:18px;flex-wrap:wrap}
+.logo{font:800 22px var(--display);letter-spacing:.06em}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:500 13px var(--body);letter-spacing:.08em;text-transform:uppercase;flex-wrap:wrap}
+nav ul a{color:var(--muted)} nav ul a:hover{color:var(--fg)}
+nav ul a.uni{color:var(--bg);background:var(--fg);padding:5px 12px;border-radius:99px}
+#universe{scroll-margin-top:60px}
+/* universe: 의도적으로 항상 어두운 우주 화면 */
+.uv{position:relative;background:#000;color:#E8E9F5;overflow:hidden}
+#sky{position:absolute;inset:0;width:100%;height:100%}
+.uv-in{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.uv-in > *{min-width:0}
+.uv small{font:500 12px var(--mono);letter-spacing:.18em;color:var(--neon)}
+.uv h2{font-size:clamp(40px,7vw,80px);margin:8px 0 18px;color:#fff;text-shadow:0 0 18px #FF2BD688}
+.uv p{color:#D6D6D6;max-width:34em;font-size:17px} .uv p b{color:#fff}
+.uv .hint{font-size:13px;color:#7A7E99}
+.story{margin-top:22px;border-left:2px solid var(--neon);padding:4px 0 4px 18px}
+.story h3{font:800 24px var(--display);margin:4px 0 6px;color:#fff}
+.story p{margin:0}
+.planets{position:relative;aspect-ratio:1;max-width:100%}
+.pl{position:absolute;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;color:#fff;font:800 13px var(--display);letter-spacing:.08em;transition:transform .3s,box-shadow .3s}
+.pl span{transform:translateY(calc(100% + 30px))}
+.pl:hover,.pl.on{transform:scale(1.08)}
+.p1{width:34%;aspect-ratio:1;left:8%;top:12%;background:radial-gradient(circle at 35% 30%,#fff,#9a9a9a 55%,#1a1a1a);box-shadow:0 0 50px #ffffff55}
+.p2{width:24%;aspect-ratio:1;right:6%;top:30%;background:repeating-linear-gradient(0deg,#ffffff30 0 1px,transparent 1px 8px),#000;border:1.5px solid #fff;box-shadow:0 0 30px #ffffff33}
+.p3{width:18%;aspect-ratio:1;left:40%;bottom:8%;background:radial-gradient(circle at 35% 30%,#FFC6F3,#FF2BD6 55%,#3d0033);box-shadow:0 0 44px #FF2BD6aa}
+.pl.on{box-shadow:0 0 0 3px #fff,0 0 70px #fff6}
+@media (max-width:860px){.uv-in{grid-template-columns:1fr}.planets{max-width:420px;width:100%;margin:0 auto}}
+.lang{font:500 13px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;cursor:pointer}
+/* hero slider */
+.hero{position:relative;height:min(78vh,720px);min-height:420px;overflow:hidden;color:#fff;background:#05060A}
+.slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s}
+.slide.on{opacity:1}
+/* 표지: 블랙·화이트 + 네온 마젠타 한 색 */
+.s1{background:radial-gradient(circle at 72% 38%,transparent 0 17%,var(--neon) 17.4% 18%,transparent 18.6%),radial-gradient(circle at 72% 38%,#fff 0,#777 9%,transparent 30%),#000}
+.s2{background:linear-gradient(to top,#000 5%,transparent 70%),repeating-linear-gradient(90deg,#ffffff1f 0 1px,transparent 1px 56px),repeating-linear-gradient(0deg,#ffffff1f 0 1px,transparent 1px 56px),radial-gradient(ellipse at 50% 100%,#FF2BD666,transparent 60%),#000}
+.s3{background:repeating-linear-gradient(0deg,#00000066 0 2px,transparent 2px 5px),linear-gradient(135deg,#000 30%,#2a2a2a 60%,var(--neon) 140%)}
+.slide .wrap{width:100%;padding-block:56px}
+.slide small{font:500 12px var(--mono);letter-spacing:.18em;opacity:.8}
+.slide h1{font:800 clamp(48px,10vw,128px)/.9 var(--display);letter-spacing:-.02em;margin:10px 0 14px}
+.slide p{margin:0;max-width:30em;opacity:.85}
+.dots{position:absolute;right:24px;bottom:28px;display:flex;gap:10px;z-index:2}
+.dots button{width:36px;height:3px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer}
+.dots button.on{background:#fff}
+/* sections */
+section{padding-block:88px}
+.head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+h2{font:800 clamp(32px,5vw,52px)/1 var(--display);letter-spacing:-.01em;margin:0}
+.more{font:500 13px var(--body);color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:2px}
+.more:hover{color:var(--fg)}
+/* artists */
+.artists{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.tile{position:relative;aspect-ratio:3/4;max-width:100%;color:#fff;overflow:hidden;display:flex;align-items:flex-end;padding:22px}
+.tile .bg{position:absolute;inset:0;transition:transform .6s}
+.tile:hover .bg{transform:scale(1.04)}
+.tile div:last-child{position:relative}
+.tile b{display:block;font:800 30px var(--display);letter-spacing:.03em}
+.tile span{font-size:13px;opacity:.8}
+/* news */
+.news{list-style:none;margin:0;padding:0;border-top:1px solid var(--fg)}
+.news li{border-bottom:1px solid var(--line)}
+.news summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:110px 1fr 120px;gap:20px;padding-block:22px;align-items:baseline}
+.news summary::-webkit-details-marker{display:none}.news summary:hover strong{text-decoration:underline}.news .body{margin:0 0 22px 130px;max-width:46em;color:var(--muted)}.news details[open] strong{color:var(--accent)}
+.news .cat{font:500 12px var(--mono);letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.news time{font:500 13px var(--mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.news strong{font-weight:500;min-width:0}
+/* business */
+.biz{background:var(--surface)}
+.bizgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.biz article{background:var(--surface);padding:28px 24px;display:grid;gap:10px;align-content:start}
+.biz .no{font:500 12px var(--mono);color:var(--muted)}
+.biz h3{font:800 22px var(--display);margin:0}
+.biz p{margin:0;color:var(--muted);font-size:14px}
+/* corp links */
+.corp{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.corp a{border:1px solid var(--line);padding:28px;display:grid;gap:6px}
+.corp a:hover{border-color:var(--fg)}
+.corp b{font:800 24px var(--display)}
+.corp span{color:var(--muted);font-size:14px}
+footer{background:#0B0C11;color:#9499AC;padding-block:48px;font-size:13px}
+footer .logo{color:#EDEEF4;font-size:18px}
+footer .cols{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:18px}
+footer p{margin:0}
+@media (max-width:860px){
+  .artists{grid-template-columns:1fr 1fr}.bizgrid{grid-template-columns:1fr 1fr}.corp{grid-template-columns:1fr}
+  nav ul{gap:18px} section{padding-block:60px}
+  .news summary{grid-template-columns:1fr;gap:4px}.news .body{margin-left:0} .news time{text-align:left}
+}
+@media (max-width:480px){.artists,.bizgrid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.slide,.tile .bg{transition:none}}
+.page-head{padding-block:72px 32px}.back{font-size:13px;color:var(--muted)}.back:hover{color:var(--fg)}
+.page-head h1{font:800 clamp(40px,7vw,80px)/1 var(--display);margin:16px 0 12px;letter-spacing:-.01em}.page-head p{color:var(--muted);margin:0}
+.ar{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;padding-block:48px;border-top:1px solid var(--line);scroll-margin-top:80px}
+.ar .tile{aspect-ratio:4/3}.ar h2{font-size:clamp(36px,5vw,56px)}.ar .type{color:var(--muted);margin:8px 0 24px}
+.ar dl{display:grid;grid-template-columns:auto 1fr;gap:12px 24px;margin:0}.ar dt{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding-top:3px}.ar dd{margin:0}
+.ar .go{display:inline-block;margin-top:24px;font-size:13px;border-bottom:1px solid var(--line);color:var(--muted)}.ar .go:hover{color:var(--fg)}
+@media (max-width:760px){.ar{grid-template-columns:1fr;gap:24px}}
+.nw{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px;padding-block:40px;border-top:1px solid var(--line);scroll-margin-top:80px}
+.nw .meta{display:grid;gap:6px;align-content:start}.nw .cat{font:500 12px var(--mono);letter-spacing:.1em;color:var(--accent);text-transform:uppercase}.nw time{font:500 13px var(--mono);color:var(--muted)}
+.nw h2{font:800 clamp(22px,3vw,30px)/1.3 var(--display);margin:0 0 12px;text-wrap:balance}.nw p{margin:0;max-width:46em;color:var(--muted)}
+.go{display:inline-block;margin-top:16px;font-size:13px;border-bottom:1px solid var(--line);color:var(--muted)}.go:hover{color:var(--fg)}
+@media (max-width:760px){.nw{grid-template-columns:1fr;gap:12px}}
+nav ul a[aria-current]{color:var(--fg);font-weight:700;text-decoration:underline;text-underline-offset:6px}nav ul a.uni[aria-current]{color:var(--bg);text-decoration:none}
+@media (max-width:600px){nav{display:grid;grid-template-columns:1fr auto;row-gap:12px}.lang{order:2}nav ul{order:3;grid-column:1/-1}}
+</style>
+
+</head>
+<body style="margin:0">
+<header><div class="wrap"><nav>
+  <a class="logo" href="index.html">MOONTIDE</a>
+  <ul><li><a href="artists.html">Artist</a></li><li><a href="news.html" aria-current="page">News</a></li><li><a href="audition.html">Audition</a></li><li><a class="uni" href="universe.html">Universe</a></li></ul>
+  <select class="lang" id="lang" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option><option value="hu">Magyar</option></select>
+</nav></div></header>
+<main class="wrap"><div class="page-head"><a data-i="back" class="back" href="index.html">← 홈으로</a><h1><span data-i="newsTitle">뉴스</span></h1><p><span data-i="newsLead">MOONTIDE의 새 소식을 전합니다.</span></p></div><article class="nw" id="release"><div class="meta"><span class="cat">Release</span><time>2026.09.22</time></div><div><h2><span data-i="nt0">SEOHA 디지털 싱글 〈Low Tide〉 발매 안내</span></h2><p data-i="nb0">서하의 새 디지털 싱글 〈Low Tide〉가 9월 22일 공개됩니다. 물이 빠진 해안에 남은 기억을 담은 곡입니다.</p><a class="go" href="artists.html#seoha"><span data-i="goArt">아티스트 보기 →</span></a></div></article><article class="nw" id="audition"><div class="meta"><span class="cat">Audition</span><time>2026.09.30</time></div><div><h2><span data-i="nt1">MOONTIDE 글로벌 오디션 2026 온라인 접수 시작 (10.13 – 11.09)</span></h2><p data-i="nb1">MOONTIDE 글로벌 오디션 2026은 10월 13일부터 11월 9일까지 온라인으로 접수합니다. 보컬, 댄스, 랩, 작곡 분야에 누구나 지원할 수 있습니다.</p><a class="go" href="audition.html"><span data-i="goAud">오디션 지원하기 →</span></a></div></article><article class="nw" id="concert"><div class="meta"><span class="cat">Concert</span><time>2026.09.15</time></div><div><h2><span data-i="nt2">LUMEN 첫 단독 콘서트 〈GLOW HOUR〉 서울 공연 티켓 오픈</span></h2><p data-i="nb2">LUMEN의 첫 단독 콘서트 〈GLOW HOUR〉 서울 공연 티켓이 오픈되었습니다. 공연 장소와 세부 일정은 추후 공지됩니다.</p><a class="go" href="artists.html#lumen"><span data-i="goArt">아티스트 보기 →</span></a></div></article></main>
+<footer><div class="wrap">
+  <div class="logo">MOONTIDE</div>
+  <div class="cols"><p data-i="foot1">(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment</p><p data-i="foot2">가상의 회사·아티스트로 만든 연습용 디자인입니다.</p></div>
+</div></footer>
+<script>
+const I={"ko": {"back": "← 홈으로", "foot1": "(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment", "foot2": "가상의 회사·아티스트로 만든 연습용 디자인입니다.", "newsTitle": "뉴스", "newsLead": "MOONTIDE의 새 소식을 전합니다.", "goAud": "오디션 지원하기 →", "goArt": "아티스트 보기 →", "nt0": "SEOHA 디지털 싱글 〈Low Tide〉 발매 안내", "nt1": "MOONTIDE 글로벌 오디션 2026 온라인 접수 시작 (10.13 – 11.09)", "nt2": "LUMEN 첫 단독 콘서트 〈GLOW HOUR〉 서울 공연 티켓 오픈", "nb0": "서하의 새 디지털 싱글 〈Low Tide〉가 9월 22일 공개됩니다. 물이 빠진 해안에 남은 기억을 담은 곡입니다.", "nb1": "MOONTIDE 글로벌 오디션 2026은 10월 13일부터 11월 9일까지 온라인으로 접수합니다. 보컬, 댄스, 랩, 작곡 분야에 누구나 지원할 수 있습니다.", "nb2": "LUMEN의 첫 단독 콘서트 〈GLOW HOUR〉 서울 공연 티켓이 오픈되었습니다. 공연 장소와 세부 일정은 추후 공지됩니다."}, "en": {"back": "← Home", "foot1": "MOONTIDE Entertainment Inc. · Seoul, Korea (fictional address)<br>© 2026 MOONTIDE Entertainment", "foot2": "A practice design featuring a fictional company and artists.", "newsTitle": "News", "newsLead": "The latest from MOONTIDE.", "goAud": "Apply for the audition →", "goArt": "View artist →", "nt0": "SEOHA digital single 〈Low Tide〉 release", "nt1": "MOONTIDE Global Audition 2026: online applications open (Oct 13 – Nov 9)", "nt2": "LUMEN first solo concert 〈GLOW HOUR〉 Seoul tickets now on sale", "nb0": "SEOHA's new digital single 〈Low Tide〉 will be released on September 22. The song captures memories left on the shore after the tide goes out.", "nb1": "Online applications for MOONTIDE Global Audition 2026 are open from October 13 to November 9. Anyone can apply in vocals, dance, rap, or songwriting.", "nb2": "Tickets are now on sale for the Seoul show of LUMEN's first solo concert 〈GLOW HOUR〉. The venue and detailed schedule will be announced later."}, "hu": {"back": "← Kezdőlap", "foot1": "MOONTIDE Entertainment Inc. · Szöul, Korea (fiktív cím)<br>© 2026 MOONTIDE Entertainment", "foot2": "Gyakorló design kitalált céggel és előadókkal.", "newsTitle": "Hírek", "newsLead": "A MOONTIDE legfrissebb hírei.", "goAud": "Jelentkezés a meghallgatásra →", "goArt": "Előadó megtekintése →", "nt0": "SEOHA digitális kislemez 〈Low Tide〉 megjelenése", "nt1": "MOONTIDE Global Audition 2026: elindult az online jelentkezés (okt. 13. – nov. 9.)", "nt2": "LUMEN első önálló koncertje 〈GLOW HOUR〉: a szöuli jegyek már kaphatók", "nb0": "SEOHA új digitális kislemeze, a 〈Low Tide〉 szeptember 22-én jelenik meg. A dal az apály után a parton maradt emlékekről szól.", "nb1": "A MOONTIDE Global Audition 2026 online jelentkezési időszaka október 13-tól november 9-ig tart. Bárki jelentkezhet ének, tánc, rap vagy dalszerzés kategóriában.", "nb2": "Megkezdődött a jegyértékesítés a LUMEN első önálló koncertjének, a 〈GLOW HOUR〉-nak a szöuli előadására. A helyszínt és a részletes programot később közöljük."}, "zh": {"back": "← 返回首页", "foot1": "MOONTIDE娱乐有限公司 · 韩国首尔（虚构地址）<br>© 2026 MOONTIDE Entertainment", "foot2": "以虚构公司与艺人制作的练习用设计。", "newsTitle": "新闻", "newsLead": "MOONTIDE 最新消息。", "goAud": "前往报名 →", "goArt": "查看艺人 →", "nt0": "SEOHA 数字单曲〈Low Tide〉发行公告", "nt1": "MOONTIDE 全球选秀 2026 线上报名开启（10.13 – 11.09）", "nt2": "LUMEN 首场个人演唱会〈GLOW HOUR〉首尔站门票开售", "nb0": "SEOHA 的全新数字单曲〈Low Tide〉将于9月22日发行。这首歌讲述了潮水退去后留在海岸上的回忆。", "nb1": "MOONTIDE 全球选秀 2026 线上报名时间为10月13日至11月9日。声乐、舞蹈、说唱、作曲领域，任何人都可以报名。", "nb2": "LUMEN 首场个人演唱会〈GLOW HOUR〉首尔站门票现已开售。演出场地与详细日程将另行公布。"}, "ja": {"back": "← ホームへ", "foot1": "株式会社MOONTIDEエンターテインメント · 韓国ソウル（架空の住所）<br>© 2026 MOONTIDE Entertainment", "foot2": "架空の会社とアーティストで制作した練習用デザインです。", "newsTitle": "ニュース", "newsLead": "MOONTIDEの最新ニュースをお届けします。", "goAud": "オーディションに応募する →", "goArt": "アーティストを見る →", "nt0": "SEOHA デジタルシングル〈Low Tide〉リリースのお知らせ", "nt1": "MOONTIDE グローバルオーディション 2026 オンライン受付開始（10.13 – 11.09）", "nt2": "LUMEN 初の単独コンサート〈GLOW HOUR〉ソウル公演チケット発売", "nb0": "SEOHAのニューデジタルシングル〈Low Tide〉が9月22日にリリースされます。潮が引いた海岸に残された記憶を描いた曲です。", "nb1": "MOONTIDE グローバルオーディション 2026 のオンライン受付は10月13日から11月9日までです。ボーカル、ダンス、ラップ、作曲の各部門にどなたでも応募できます。", "nb2": "LUMEN初の単独コンサート〈GLOW HOUR〉ソウル公演のチケット販売がスタートしました。会場と詳しいスケジュールは後日お知らせします。"}, "es": {"back": "← Inicio", "foot1": "MOONTIDE Entertainment Inc. · Seúl, Corea (dirección ficticia)<br>© 2026 MOONTIDE Entertainment", "foot2": "Diseño de práctica con una empresa y artistas ficticios.", "newsTitle": "Noticias", "newsLead": "Lo último de MOONTIDE.", "goAud": "Inscríbete en la audición →", "goArt": "Ver artista →", "nt0": "Lanzamiento del sencillo digital de SEOHA 〈Low Tide〉", "nt1": "MOONTIDE Global Audition 2026: inscripciones en línea abiertas (13 oct. – 9 nov.)", "nt2": "Primer concierto en solitario de LUMEN 〈GLOW HOUR〉: entradas para Seúl ya a la venta", "nb0": "El nuevo sencillo digital de SEOHA, 〈Low Tide〉, se lanzará el 22 de septiembre. La canción recoge los recuerdos que quedan en la orilla cuando baja la marea.", "nb1": "Las inscripciones en línea para MOONTIDE Global Audition 2026 están abiertas del 13 de octubre al 9 de noviembre. Cualquier persona puede presentarse en voz, baile, rap o composición.", "nb2": "Ya están a la venta las entradas para el concierto en Seúl de 〈GLOW HOUR〉, el primer concierto en solitario de LUMEN. El lugar y el calendario detallado se anunciarán más adelante."}, "fr": {"back": "← Accueil", "foot1": "MOONTIDE Entertainment Inc. · Séoul, Corée (adresse fictive)<br>© 2026 MOONTIDE Entertainment", "foot2": "Design d'entraînement avec une entreprise et des artistes fictifs.", "newsTitle": "Actualités", "newsLead": "Les dernières nouvelles de MOONTIDE.", "goAud": "Postuler à l'audition →", "goArt": "Voir l'artiste →", "nt0": "Sortie du single numérique de SEOHA 〈Low Tide〉", "nt1": "MOONTIDE Global Audition 2026 : ouverture des inscriptions en ligne (13 oct. – 9 nov.)", "nt2": "Premier concert solo de LUMEN 〈GLOW HOUR〉 : billets pour Séoul en vente", "nb0": "Le nouveau single numérique de SEOHA, 〈Low Tide〉, sortira le 22 septembre. La chanson évoque les souvenirs laissés sur le rivage quand la marée se retire.", "nb1": "Les inscriptions en ligne pour MOONTIDE Global Audition 2026 sont ouvertes du 13 octobre au 9 novembre. Tout le monde peut postuler en chant, danse, rap ou composition.", "nb2": "La billetterie est ouverte pour la date de Séoul de 〈GLOW HOUR〉, le premier concert solo de LUMEN. Le lieu et le programme détaillé seront annoncés ultérieurement."}};
+const sel=document.getElementById('lang');let lang='ko';
+function setLang(v){if(!I[v])v='ko';lang=v;sel.value=v;document.documentElement.lang=v==='zh'?'zh-Hans':v;
+  document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=I[v][e.dataset.i]);
+  try{localStorage.setItem('mt-lang',v)}catch(e){}if(window.onLang)onLang(v);}
+sel.onchange=e=>setLang(e.target.value);
+
+try{setLang(localStorage.getItem('mt-lang')||'ko')}catch(e){setLang('ko')}
+</script>
+</body>
+</html>

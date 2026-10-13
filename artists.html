@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="MOONTIDE Entertainment - 가상 엔터테인먼트사 연습용 홈페이지. 아티스트 ORBIT9, LUMEN, SEOHA와 JS UNIVERSE 세계관.">
+<meta name="naver-site-verification" content="728dda962851e6ce5673fdf8419e861c1f51f630" />
+<title>Artists · MOONTIDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 기업형 엔터 사이트 — 풀폭 비주얼 슬라이더, 기업 메뉴, 큰 아티스트 타일, 뉴스 리스트, 사업영역, 기업정보 푸터 */
+:root{
+  --bg:#FFFFFF; --surface:#F4F4F4; --fg:#0A0A0A; --muted:#6B6B6B; --line:#E2E2E2; --accent:#D1009C; --neon:#FF2BD6;
+  --display:"Bricolage Grotesque","Noto Sans KR",system-ui,sans-serif;
+  --body:"Noto Sans KR",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --surface:#111111; --fg:#F5F5F5; --muted:#9A9A9A; --line:#262626; --accent:#FF3BD9; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.65 var(--body)}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:24px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:18px;flex-wrap:wrap}
+.logo{font:800 22px var(--display);letter-spacing:.06em}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:500 13px var(--body);letter-spacing:.08em;text-transform:uppercase;flex-wrap:wrap}
+nav ul a{color:var(--muted)} nav ul a:hover{color:var(--fg)}
+nav ul a.uni{color:var(--bg);background:var(--fg);padding:5px 12px;border-radius:99px}
+#universe{scroll-margin-top:60px}
+/* universe: 의도적으로 항상 어두운 우주 화면 */
+.uv{position:relative;background:#000;color:#E8E9F5;overflow:hidden}
+#sky{position:absolute;inset:0;width:100%;height:100%}
+.uv-in{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.uv-in > *{min-width:0}
+.uv small{font:500 12px var(--mono);letter-spacing:.18em;color:var(--neon)}
+.uv h2{font-size:clamp(40px,7vw,80px);margin:8px 0 18px;color:#fff;text-shadow:0 0 18px #FF2BD688}
+.uv p{color:#D6D6D6;max-width:34em;font-size:17px} .uv p b{color:#fff}
+.uv .hint{font-size:13px;color:#7A7E99}
+.story{margin-top:22px;border-left:2px solid var(--neon);padding:4px 0 4px 18px}
+.story h3{font:800 24px var(--display);margin:4px 0 6px;color:#fff}
+.story p{margin:0}
+.planets{position:relative;aspect-ratio:1;max-width:100%}
+.pl{position:absolute;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;color:#fff;font:800 13px var(--display);letter-spacing:.08em;transition:transform .3s,box-shadow .3s}
+.pl span{transform:translateY(calc(100% + 30px))}
+.pl:hover,.pl.on{transform:scale(1.08)}
+.p1{width:34%;aspect-ratio:1;left:8%;top:12%;background:radial-gradient(circle at 35% 30%,#fff,#9a9a9a 55%,#1a1a1a);box-shadow:0 0 50px #ffffff55}
+.p2{width:24%;aspect-ratio:1;right:6%;top:30%;background:repeating-linear-gradient(0deg,#ffffff30 0 1px,transparent 1px 8px),#000;border:1.5px solid #fff;box-shadow:0 0 30px #ffffff33}
+.p3{width:18%;aspect-ratio:1;left:40%;bottom:8%;background:radial-gradient(circle at 35% 30%,#FFC6F3,#FF2BD6 55%,#3d0033);box-shadow:0 0 44px #FF2BD6aa}
+.pl.on{box-shadow:0 0 0 3px #fff,0 0 70px #fff6}
+@media (max-width:860px){.uv-in{grid-template-columns:1fr}.planets{max-width:420px;width:100%;margin:0 auto}}
+.lang{font:500 13px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;cursor:pointer}
+/* hero slider */
+.hero{position:relative;height:min(78vh,720px);min-height:420px;overflow:hidden;color:#fff;background:#05060A}
+.slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s}
+.slide.on{opacity:1}
+/* 표지: 블랙·화이트 + 네온 마젠타 한 색 */
+.s1{background:radial-gradient(circle at 72% 38%,transparent 0 17%,var(--neon) 17.4% 18%,transparent 18.6%),radial-gradient(circle at 72% 38%,#fff 0,#777 9%,transparent 30%),#000}
+.s2{background:linear-gradient(to top,#000 5%,transparent 70%),repeating-linear-gradient(90deg,#ffffff1f 0 1px,transparent 1px 56px),repeating-linear-gradient(0deg,#ffffff1f 0 1px,transparent 1px 56px),radial-gradient(ellipse at 50% 100%,#FF2BD666,transparent 60%),#000}
+.s3{background:repeating-linear-gradient(0deg,#00000066 0 2px,transparent 2px 5px),linear-gradient(135deg,#000 30%,#2a2a2a 60%,var(--neon) 140%)}
+.slide .wrap{width:100%;padding-block:56px}
+.slide small{font:500 12px var(--mono);letter-spacing:.18em;opacity:.8}
+.slide h1{font:800 clamp(48px,10vw,128px)/.9 var(--display);letter-spacing:-.02em;margin:10px 0 14px}
+.slide p{margin:0;max-width:30em;opacity:.85}
+.dots{position:absolute;right:24px;bottom:28px;display:flex;gap:10px;z-index:2}
+.dots button{width:36px;height:3px;border:0;padding:0;background:rgba(255,255,255,.35);cursor:pointer}
+.dots button.on{background:#fff}
+/* sections */
+section{padding-block:88px}
+.head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+h2{font:800 clamp(32px,5vw,52px)/1 var(--display);letter-spacing:-.01em;margin:0}
+.more{font:500 13px var(--body);color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:2px}
+.more:hover{color:var(--fg)}
+/* artists */
+.artists{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.tile{position:relative;aspect-ratio:3/4;max-width:100%;color:#fff;overflow:hidden;display:flex;align-items:flex-end;padding:22px}
+.tile .bg{position:absolute;inset:0;transition:transform .6s}
+.tile:hover .bg{transform:scale(1.04)}
+.tile div:last-child{position:relative}
+.tile b{display:block;font:800 30px var(--display);letter-spacing:.03em}
+.tile span{font-size:13px;opacity:.8}
+/* news */
+.news{list-style:none;margin:0;padding:0;border-top:1px solid var(--fg)}
+.news li{border-bottom:1px solid var(--line)}
+.news summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:110px 1fr 120px;gap:20px;padding-block:22px;align-items:baseline}
+.news summary::-webkit-details-marker{display:none}.news summary:hover strong{text-decoration:underline}.news .body{margin:0 0 22px 130px;max-width:46em;color:var(--muted)}.news details[open] strong{color:var(--accent)}
+.news .cat{font:500 12px var(--mono);letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.news time{font:500 13px var(--mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.news strong{font-weight:500;min-width:0}
+/* business */
+.biz{background:var(--surface)}
+.bizgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.biz article{background:var(--surface);padding:28px 24px;display:grid;gap:10px;align-content:start}
+.biz .no{font:500 12px var(--mono);color:var(--muted)}
+.biz h3{font:800 22px var(--display);margin:0}
+.biz p{margin:0;color:var(--muted);font-size:14px}
+/* corp links */
+.corp{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.corp a{border:1px solid var(--line);padding:28px;display:grid;gap:6px}
+.corp a:hover{border-color:var(--fg)}
+.corp b{font:800 24px var(--display)}
+.corp span{color:var(--muted);font-size:14px}
+footer{background:#0B0C11;color:#9499AC;padding-block:48px;font-size:13px}
+footer .logo{color:#EDEEF4;font-size:18px}
+footer .cols{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:18px}
+footer p{margin:0}
+@media (max-width:860px){
+  .artists{grid-template-columns:1fr 1fr}.bizgrid{grid-template-columns:1fr 1fr}.corp{grid-template-columns:1fr}
+  nav ul{gap:18px} section{padding-block:60px}
+  .news summary{grid-template-columns:1fr;gap:4px}.news .body{margin-left:0} .news time{text-align:left}
+}
+@media (max-width:480px){.artists,.bizgrid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.slide,.tile .bg{transition:none}}
+.page-head{padding-block:72px 32px}.back{font-size:13px;color:var(--muted)}.back:hover{color:var(--fg)}
+.page-head h1{font:800 clamp(40px,7vw,80px)/1 var(--display);margin:16px 0 12px;letter-spacing:-.01em}.page-head p{color:var(--muted);margin:0}
+.ar{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;padding-block:48px;border-top:1px solid var(--line);scroll-margin-top:80px}
+.ar .tile{aspect-ratio:4/3}.ar h2{font-size:clamp(36px,5vw,56px)}.ar .type{color:var(--muted);margin:8px 0 24px}
+.ar dl{display:grid;grid-template-columns:auto 1fr;gap:12px 24px;margin:0}.ar dt{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding-top:3px}.ar dd{margin:0}
+.ar .go{display:inline-block;margin-top:24px;font-size:13px;border-bottom:1px solid var(--line);color:var(--muted)}.ar .go:hover{color:var(--fg)}
+@media (max-width:760px){.ar{grid-template-columns:1fr;gap:24px}}
+nav ul a[aria-current]{color:var(--fg);font-weight:700;text-decoration:underline;text-underline-offset:6px}nav ul a.uni[aria-current]{color:var(--bg);text-decoration:none}
+@media (max-width:600px){nav{display:grid;grid-template-columns:1fr auto;row-gap:12px}.lang{order:2}nav ul{order:3;grid-column:1/-1}}
+</style>
+
+</head>
+<body style="margin:0">
+<header><div class="wrap"><nav>
+  <a class="logo" href="index.html">MOONTIDE</a>
+  <ul><li><a href="artists.html" aria-current="page">Artist</a></li><li><a href="news.html">News</a></li><li><a href="audition.html">Audition</a></li><li><a class="uni" href="universe.html">Universe</a></li></ul>
+  <select class="lang" id="lang" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option><option value="hu">Magyar</option></select>
+</nav></div></header>
+<main class="wrap">
+  <div class="page-head"><a class="back" href="index.html"><span data-i="back">← 홈으로</span></a><h1><span data-i="title">소속 아티스트</span></h1><p><span data-i="lead">MOONTIDE와 함께하는 세 팀의 아티스트를 소개합니다.</span></p></div>
+  <article class="ar" id="orbit9">
+  <div class="tile"><div class="bg s1"></div><div><b>ORBIT9</b></div></div>
+  <div><h2>ORBIT9</h2><p class="type"><span data-i="orbitType">9인조 보이그룹</span></p>
+  <dl><dt><span data-i="debut">데뷔</span></dt><dd>2021.03.18</dd><dt><span data-i="latest">최근작</span></dt><dd>3rd Mini 〈Gravity Well〉</dd><dt><span data-i="fandom">팬덤</span></dt><dd>SATELLITE</dd><dt><span data-i="role">JS UNIVERSE 속 역할</span></dt><dd><span data-i="orbitRole">아홉 구역의 관리자</span></dd></dl>
+  <a class="go" href="index.html#universe"><span data-i="world">세계관 보기 →</span></a></div>
+</article>
+  <article class="ar" id="lumen">
+  <div class="tile"><div class="bg s2"></div><div><b>LUMEN</b></div></div>
+  <div><h2>LUMEN</h2><p class="type"><span data-i="lumenType">5인조 걸그룹</span></p>
+  <dl><dt><span data-i="debut">데뷔</span></dt><dd>2023.07.04</dd><dt><span data-i="latest">최근작</span></dt><dd>1st Album 〈Bioluminescent〉</dd><dt><span data-i="fandom">팬덤</span></dt><dd>GLOW</dd><dt><span data-i="role">JS UNIVERSE 속 역할</span></dt><dd><span data-i="lumenRole">빛을 그리는 프로그램</span></dd></dl>
+  <a class="go" href="index.html#universe"><span data-i="world">세계관 보기 →</span></a></div>
+</article>
+  <article class="ar" id="seoha">
+  <div class="tile"><div class="bg s3"></div><div><b>SEOHA</b></div></div>
+  <div><h2>SEOHA</h2><p class="type"><span data-i="seohaType">솔로 싱어송라이터</span></p>
+  <dl><dt><span data-i="debut">데뷔</span></dt><dd>2020.11.02</dd><dt><span data-i="latest">최근작</span></dt><dd>Single 〈Low Tide〉</dd><dt><span data-i="fandom">팬덤</span></dt><dd>SHORE</dd><dt><span data-i="role">JS UNIVERSE 속 역할</span></dt><dd><span data-i="seohaRole">로그인 게이트의 기록자</span></dd></dl>
+  <a class="go" href="index.html#universe"><span data-i="world">세계관 보기 →</span></a></div>
+</article>
+</main>
+<footer><div class="wrap">
+  <div class="logo">MOONTIDE</div>
+  <div class="cols"><p data-i="foot1">(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment</p><p data-i="foot2">가상의 회사·아티스트로 만든 연습용 디자인입니다.</p></div>
+</div></footer>
+<script>
+const I={"ko": {"title": "소속 아티스트", "back": "← 홈으로", "lead": "MOONTIDE와 함께하는 세 팀의 아티스트를 소개합니다.", "debut": "데뷔", "fandom": "팬덤", "latest": "최근작", "role": "JS UNIVERSE 속 역할", "world": "세계관 보기 →", "orbitType": "9인조 보이그룹", "lumenType": "5인조 걸그룹", "seohaType": "솔로 싱어송라이터", "orbitRole": "아홉 구역의 관리자", "lumenRole": "빛을 그리는 프로그램", "seohaRole": "로그인 게이트의 기록자", "foot1": "(주)문타이드엔터테인먼트 · 서울특별시 (가상 주소)<br>© 2026 MOONTIDE Entertainment", "foot2": "가상의 회사·아티스트로 만든 연습용 디자인입니다."}, "en": {"title": "Artists", "back": "← Home", "lead": "Meet the three artists of MOONTIDE.", "debut": "Debut", "fandom": "Fandom", "latest": "Latest release", "role": "Role in JS UNIVERSE", "world": "Explore the worldview →", "orbitType": "9-member boy group", "lumenType": "5-member girl group", "seohaType": "Solo singer-songwriter", "orbitRole": "Keepers of the Nine Districts", "lumenRole": "Programs That Paint Light", "seohaRole": "Recorder of the Login Gate", "foot1": "MOONTIDE Entertainment Inc. · Seoul, Korea (fictional address)<br>© 2026 MOONTIDE Entertainment", "foot2": "A practice design featuring a fictional company and artists."}, "hu": {"title": "Előadók", "back": "← Kezdőlap", "lead": "Ismerd meg a MOONTIDE három előadóját.", "debut": "Debütálás", "fandom": "Rajongótábor", "latest": "Legújabb megjelenés", "role": "Szerep a JS UNIVERSE-ben", "world": "Világ felfedezése →", "orbitType": "9 tagú fiúbanda", "lumenType": "5 tagú lánybanda", "seohaType": "Szólóénekes és dalszerző", "orbitRole": "A kilenc kerület őrzői", "lumenRole": "Fényt festő programok", "seohaRole": "A bejelentkezési kapu krónikása", "foot1": "MOONTIDE Entertainment Inc. · Szöul, Korea (fiktív cím)<br>© 2026 MOONTIDE Entertainment", "foot2": "Gyakorló design kitalált céggel és előadókkal."}, "zh": {"title": "旗下艺人", "back": "← 返回首页", "lead": "介绍 MOONTIDE 旗下的三组艺人。", "debut": "出道", "fandom": "粉丝名", "latest": "最新作品", "role": "在 JS UNIVERSE 中的角色", "world": "查看世界观 →", "orbitType": "九人男子组合", "lumenType": "五人女子组合", "seohaType": "个人创作歌手", "orbitRole": "九个区域的守护者", "lumenRole": "描绘光芒的程序", "seohaRole": "登录之门的记录者", "foot1": "MOONTIDE娱乐有限公司 · 韩国首尔（虚构地址）<br>© 2026 MOONTIDE Entertainment", "foot2": "以虚构公司与艺人制作的练习用设计。"}, "ja": {"title": "所属アーティスト", "back": "← ホームへ", "lead": "MOONTIDE所属の3組のアーティストをご紹介します。", "debut": "デビュー", "fandom": "ファンダム", "latest": "最新作", "role": "JS UNIVERSEでの役割", "world": "世界観を見る →", "orbitType": "9人組ボーイズグループ", "lumenType": "5人組ガールズグループ", "seohaType": "ソロ・シンガーソングライター", "orbitRole": "9つの区域の管理者", "lumenRole": "光を描くプログラム", "seohaRole": "ログインゲートの記録者", "foot1": "株式会社MOONTIDEエンターテインメント · 韓国ソウル（架空の住所）<br>© 2026 MOONTIDE Entertainment", "foot2": "架空の会社とアーティストで制作した練習用デザインです。"}, "es": {"title": "Artistas", "back": "← Inicio", "lead": "Conoce a los tres artistas de MOONTIDE.", "debut": "Debut", "fandom": "Fandom", "latest": "Último lanzamiento", "role": "Papel en JS UNIVERSE", "world": "Ver el universo →", "orbitType": "Grupo masculino de 9 integrantes", "lumenType": "Grupo femenino de 5 integrantes", "seohaType": "Artista en solitario", "orbitRole": "Guardianes de los nueve distritos", "lumenRole": "Programas que pintan luz", "seohaRole": "Cronista de la puerta de acceso", "foot1": "MOONTIDE Entertainment Inc. · Seúl, Corea (dirección ficticia)<br>© 2026 MOONTIDE Entertainment", "foot2": "Diseño de práctica con una empresa y artistas ficticios."}, "fr": {"title": "Artistes", "back": "← Accueil", "lead": "Découvrez les trois artistes de MOONTIDE.", "debut": "Débuts", "fandom": "Fandom", "latest": "Dernière sortie", "role": "Rôle dans JS UNIVERSE", "world": "Découvrir l’univers →", "orbitType": "Boys band de 9 membres", "lumenType": "Girls band de 5 membres", "seohaType": "Artiste solo", "orbitRole": "Gardiens des neuf districts", "lumenRole": "Programmes qui peignent la lumière", "seohaRole": "Archiviste de la porte de connexion", "foot1": "MOONTIDE Entertainment Inc. · Séoul, Corée (adresse fictive)<br>© 2026 MOONTIDE Entertainment", "foot2": "Design d'entraînement avec une entreprise et des artistes fictifs."}};
+const sel=document.getElementById('lang');
+function setLang(v){if(!I[v])v='ko';sel.value=v;document.documentElement.lang=v==='zh'?'zh-Hans':v;
+  document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=I[v][e.dataset.i]);
+  try{localStorage.setItem('mt-lang',v)}catch(e){}}
+sel.onchange=e=>setLang(e.target.value);
+try{setLang(localStorage.getItem('mt-lang')||'ko')}catch(e){setLang('ko')}
+</script>
+</body>
+</html>
